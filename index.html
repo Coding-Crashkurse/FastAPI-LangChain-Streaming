@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Stream API Data</title>
+</head>
+
+<body>
+    <h1>Chat API Streaming Data</h1>
+    <input type="text" id="message-input" placeholder="Type your message here">
+    <button onclick="sendMessage()">Send Message</button>
+    <div id="data-container">
+        <!-- Data will be appended here -->
+    </div>
+
+    <script>
+        let evtSource;
+
+        function sendMessage() {
+            const message = document.getElementById("message-input").value;
+            if (evtSource) {
+                evtSource.close();
+            }
+            evtSource = new EventSource(`http://localhost:8000/chat_stream/${encodeURIComponent(message)}`);
+
+            evtSource.onmessage = function (event) {
+                const dataContainer = document.getElementById("data-container");
+                dataContainer.innerHTML += event.data;  // Appending token by token
+            };
+
+            evtSource.onerror = function (err) {
+                console.error("EventSource failed. ReadyState:", evtSource.readyState, "Error:", err);
+                evtSource.close();
+            };
+        }
+    </script>
+</body>
+
+</html>
