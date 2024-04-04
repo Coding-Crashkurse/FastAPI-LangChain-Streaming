@@ -1,19 +1,19 @@
 from fastapi import FastAPI
-from fastapi.responses import StreamingResponse
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse, FileResponse
 from langchain_openai import ChatOpenAI
+from dotenv import load_dotenv
+import json
 
+load_dotenv()
 
 model = ChatOpenAI(temperature=0, streaming=True)
 app = FastAPI()
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+
+@app.get("/")
+async def root():
+    return FileResponse("static/index.html")
+
 
 @app.get("/chat_stream/{message}")
 async def chat_stream(message: str):
@@ -24,6 +24,8 @@ async def chat_stream(message: str):
 
     return StreamingResponse(generate_chat_responses(), media_type="text/event-stream")
 
+
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(app, host="0.0.0.0", port=8000)
