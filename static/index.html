@@ -6,14 +6,24 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat Stream API Data</title>
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 </head>
 
-<body>
-    <h1>Chat API Streaming Data</h1>
-    <input type="text" id="message-input" placeholder="Type your message here">
-    <button onclick="sendMessage()">Send Message</button>
-    <div id="data-container">
-        <!-- Data will be appended here -->
+<body class="blue-grey lighten-5">
+    <div class="container">
+        <h1 class="center-align">Chat API Streaming Data</h1>
+        <div class="row">
+            <div class="input-field col s9">
+                <input type="text" id="message-input" class="validate" placeholder="Type your message here">
+            </div>
+            <div class="col s3">
+                <button class="btn waves-effect waves-light" onclick="sendMessage()">Send Message</button>
+            </div>
+        </div>
+        <div id="data-container" class="section">
+            <!-- Data will be appended here -->
+        </div>
     </div>
 
     <script>
@@ -37,6 +47,8 @@
             };
         }
     </script>
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 </body>
 
 </html>
