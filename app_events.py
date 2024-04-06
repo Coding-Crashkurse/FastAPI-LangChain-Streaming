@@ -65,19 +65,19 @@ def serialize_aimessagechunk(chunk):
             f"Object of type {type(chunk).__name__} is not correctly formatted for serialization"
         )
 
+async def generate_chat_events(message):
+    async for event in model.astream_events(message, version="v1"):
+        if event["event"] == "on_chat_model_stream":
+            chunk_content = serialize_aimessagechunk(event["data"]["chunk"])
+            chunk_content_html = chunk_content.replace("\n", "<br>")
+            yield f"data: {chunk_content_html}\n\n"
+        elif event["event"] == "on_chat_model_end":
+            print("Chat model has completed its response.")
+
 
 @app.get("/chat_stream/{message}")
 async def chat_stream_events(message: str):
-    async def generate_chat_events():
-        async for event in model.astream_events(message, version="v1"):
-            if event["event"] == "on_chat_model_stream":
-                chunk_content = serialize_aimessagechunk(event["data"]["chunk"])
-                chunk_content_html = chunk_content.replace("\n", "<br>")
-                yield f"data: {chunk_content_html}\n\n"
-            elif event["event"] == "on_chat_model_end":
-                print("Chat model has completed its response.")
-
-    return StreamingResponse(generate_chat_events(), media_type="text/event-stream")
+    return StreamingResponse(generate_chat_events(message), media_type="text/event-stream")
 
 
 if __name__ == "__main__":

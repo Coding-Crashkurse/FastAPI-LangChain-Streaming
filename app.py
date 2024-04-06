@@ -44,6 +44,11 @@ retrieval_chain = (
 
 app = FastAPI()
 
+async def generate_chat_responses(message):
+    async for chunk in retrieval_chain.astream(message):
+        content = chunk.replace("\n", "<br>")
+        yield f"data: {content}\n\n"
+
 
 @app.get("/")
 async def root():
@@ -52,12 +57,7 @@ async def root():
 
 @app.get("/chat_stream/{message}")
 async def chat_stream(message: str):
-    async def generate_chat_responses():
-        async for chunk in retrieval_chain.astream(message):
-            content = chunk.replace("\n", "<br>")
-            yield f"data: {content}\n\n"
-
-    return StreamingResponse(generate_chat_responses(), media_type="text/event-stream")
+    return StreamingResponse(generate_chat_responses(message=message), media_type="text/event-stream")
 
 
 if __name__ == "__main__":
