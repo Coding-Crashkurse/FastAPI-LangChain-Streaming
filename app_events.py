@@ -58,8 +58,6 @@ def serialize_aimessagechunk(chunk):
     """
     if isinstance(chunk, AIMessageChunk):
         return chunk.content
-    elif isinstance(chunk, dict) and "content" in chunk:
-        return chunk["content"]
     else:
         raise TypeError(
             f"Object of type {type(chunk).__name__} is not correctly formatted for serialization"
